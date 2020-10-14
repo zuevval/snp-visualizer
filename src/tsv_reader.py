@@ -1,5 +1,5 @@
 import csv
-from typing import List
+from typing import List, Tuple, Dict, Any
 from collections import defaultdict
 
 
@@ -17,7 +17,8 @@ def is_valid_snp_row(row: List[str]) -> bool:
     return row_len == len(row) and not (len(row[ref_idx]) > 1 or len(row[ref_idx]) > 1)
 
 
-def snp_to_lists(snp_data_filename: str, samples_filename: str):
+def snp_to_lists(snp_data_filename: str, samples_filename: str) -> Tuple[
+      Dict[int, List[Any]], Dict[int, int], Dict[int, List[int]]]:
     snp_data = read_tsv_data(snp_data_filename, skip_header=True)
     snp_dic = {int(row[0]): row[1:] for row in snp_data if is_valid_snp_row(row)}
     snp_indices = {key: index for index, key in enumerate(snp_dic.keys())}

@@ -4,6 +4,9 @@
 # directory with real data
 real_data
 
+# pipeline artifacts
+out
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
