@@ -1,14 +1,18 @@
 import csv
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, Union
 from collections import defaultdict
+from itertools import islice
 
 
-def read_tsv_data(filename: str, skip_header=False) -> List[List[str]]:
+def read_tsv_data(filename: str, max_rows: Union[None, int] = None, skip_header=False) -> List[List[str]]:
     with open(filename) as fin:
         rd = csv.reader(fin, delimiter="\t")
         if skip_header:
             next(rd)
-        return list(rd)
+        if max_rows is None:
+            return list(rd)
+        else:
+            return list(islice(rd, 0, max_rows))
 
 
 def is_valid_snp_row(row: List[str]) -> bool:
@@ -17,12 +21,12 @@ def is_valid_snp_row(row: List[str]) -> bool:
     return row_len == len(row) and not (len(row[ref_idx]) > 1 or len(row[ref_idx]) > 1)
 
 
-def snp_to_lists(snp_data_filename: str, samples_filename: str) -> Tuple[
+def snp_to_lists(snp_data_filename: str, samples_filename: str, max_samples: Union[int, None] = None) -> Tuple[
       Dict[int, List[Any]], Dict[int, int], Dict[int, List[int]]]:
     snp_data = read_tsv_data(snp_data_filename, skip_header=True)
     snp_dic = {int(row[0]): row[1:] for row in snp_data if is_valid_snp_row(row)}
     snp_indices = {key: index for index, key in enumerate(snp_dic.keys())}
-    samples = read_tsv_data(samples_filename, skip_header=True)
+    samples = read_tsv_data(samples_filename, max_rows=max_samples, skip_header=True)
     samples_vectors = defaultdict(lambda: [0] * len(snp_indices))
     for row in samples:
         if len(row) < 3:

@@ -21,6 +21,17 @@ force_directed_graph = function(dm = ? data.frame, out_filename = ? character){
   dev.off()
 }
 
+measure_time <- function(n = ? numeric){
+  input_filename = paste("../data/out/real_data/snp_matrix_", as.character(n), ".txt", sep="")
+  out_graph_filename = paste("../data/out/vis/real_data/force_graph_", as.character(n), ".jpg", sep="")
+  dm <- load_dist_mtx(input_filename)
+  heatmap(dm)
+  system.time(force_directed_graph(dm, out_graph_filename))
+}
+
+lapply(c(10, 20, 30, 40, 50), measure_time)
+  
+
 dm <- load_dist_mtx("../data/out/test/snp_matrix.txt")
 system.time(heatmap(dm))
 system.time(force_directed_graph(dm, "../data/out/vis/test_force_graph.jpg"))
