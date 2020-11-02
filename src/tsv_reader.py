@@ -1,5 +1,5 @@
 import csv
-from typing import List, Tuple, Dict, Any, Union
+from typing import List, Tuple, Dict, Any, Union, DefaultDict
 from collections import defaultdict
 from itertools import islice
 
@@ -27,7 +27,7 @@ def snp_to_lists(snp_data_filename: str, samples_filename: str, max_samples: Uni
     snp_dic = {int(row[0]): row[1:] for row in snp_data if is_valid_snp_row(row)}
     snp_indices = {key: index for index, key in enumerate(snp_dic.keys())}
     samples = read_tsv_data(samples_filename, max_rows=max_samples, skip_header=True)
-    samples_vectors = defaultdict(lambda: [0] * len(snp_indices))
+    samples_vectors: DefaultDict[int, List[int]] = defaultdict(lambda: [0] * len(snp_indices))
     for row in samples:
         if len(row) < 3:
             print("warning: invalid row")  # TODO set up logger
