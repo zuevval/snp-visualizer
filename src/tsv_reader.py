@@ -18,11 +18,11 @@ def read_tsv_data(filename: str, max_rows: Union[None, int] = None, skip_header=
 def is_valid_snp_row(row: List[str]) -> bool:
     # expecting data in the format: [id	chr	start	end	rsid	ref	alt], `ref`, `alt` of length 1
     ref_idx, alt_idx, row_len = 5, 6, 7
-    return row_len == len(row) and not (len(row[ref_idx]) > 1 or len(row[ref_idx]) > 1)
+    return row_len == len(row) and not (len(row[ref_idx]) > 1 or len(row[alt_idx]) > 1)
 
 
-def snp_to_lists(snp_data_filename: str, samples_filename: str, max_samples: Union[int, None] = None) -> Tuple[
-      Dict[int, List[Any]], Dict[int, int], Dict[int, List[int]]]:
+def snp_to_lists(snp_data_filename: str, samples_filename: str, max_samples: Union[int, None] = None) -> \
+        Tuple[Dict[int, List[Any]], Dict[int, int], Dict[int, List[int]]]:
     snp_data = read_tsv_data(snp_data_filename, skip_header=True)
     snp_dic = {int(row[0]): row[1:] for row in snp_data if is_valid_snp_row(row)}
     snp_indices = {key: index for index, key in enumerate(snp_dic.keys())}
@@ -38,13 +38,5 @@ def snp_to_lists(snp_data_filename: str, samples_filename: str, max_samples: Uni
     return snp_dic, snp_indices, samples_vectors
 
 
-def main():
-    # from multiprocessing import Pool
-    # with Pool(5) as p: # TODO either use multiprocessing, or switch to another language (C++/Java), or both
-    #     snp_to_lists("../data/real_data/snp_data.tsv", "../data/real_data/snp2sample.tsv")
-    _, _, samples_vectors = snp_to_lists("../data/test/snp_data.tsv", "../data/test/snp2sample.tsv")
-    print(samples_vectors)
-
-
-if __name__ == "__main__":
-    main()
+def read_snp_annotation(snp_annotation_filename: str):
+    pass  # TODO

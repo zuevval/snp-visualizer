@@ -1,0 +1,3 @@
+snp_id	Consequence	IMPACT
+101 intron_variant MODIFIER
+103	splice_acceptor_variant,non_coding_transcript_variant	HIGH
