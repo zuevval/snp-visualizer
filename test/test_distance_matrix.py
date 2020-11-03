@@ -27,7 +27,7 @@ def test_dm_measure_time():
         start = time()
         _, _, samples_vectors = snp_to_lists(str(get_data_path() / "real_data/snp_data.tsv"),
                                              str(get_data_path() / "real_data/snp2sample.tsv"),
-                                             max_samples)
+                                             max_samples=max_samples)
         load_time = time()
         print("loaded " + str(len(samples_vectors)) + " samples")
         dm = distance_matrix(samples_vectors, manhattan_dist)

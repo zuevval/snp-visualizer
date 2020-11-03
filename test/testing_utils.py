@@ -19,6 +19,9 @@ def get_data_path() -> Path:
     return _get_path("DATA_PATH", "./data")
 
 
-def prepare_test_data() -> Tuple[Dict[int, List[Any]], Dict[int, int], Dict[int, List[int]]]:
+def prepare_test_data(significant_only: bool = False) -> \
+        Tuple[Dict[int, List[Any]], Dict[int, int], Dict[int, List[int]]]:
+    annotations_filename = str(get_data_path() / "test/snp_annotation.tsv") if significant_only else None
     return snp_to_lists(str(get_data_path() / "test/snp_data.tsv"),
-                        str(get_data_path() / "test/snp2sample.tsv"))
+                        str(get_data_path() / "test/snp2sample.tsv"),
+                        annotations_filename=annotations_filename)

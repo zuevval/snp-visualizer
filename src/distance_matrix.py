@@ -13,10 +13,12 @@ def manhattan_dist(seq_top: List[int], seq_bottom: List[int]) -> int:
 def distance_matrix(samples: Dict[Any, List[int]], metric: Callable[[List[int], List[int]], int]) -> List[List[int]]:
     result = [[0] * len(samples) for _ in range(len(samples))]
     samples_values = list(samples.values())
+    print("dm: start calculating")
     for i, s_i in enumerate(samples_values):
-        # print('dm: ' + str(i))  # TODO logging
+        print('\rdm: ' + str(i), end="")  # TODO logging
         for j, s_j in enumerate(samples_values[i + 1:], start=i + 1):
             result[i][j] = result[j][i] = metric(s_i, s_j)
+    print("dm: calculated!")
     return result
 
 
