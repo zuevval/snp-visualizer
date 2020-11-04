@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import List, Dict, Any, Callable
 
 
@@ -20,10 +19,3 @@ def distance_matrix(samples: Dict[Any, List[int]], metric: Callable[[List[int], 
             result[i][j] = result[j][i] = metric(s_i, s_j)
     print("dm: calculated!")
     return result
-
-
-def matrix_to_file(mtx: List[List[int]], output_filename: Path) -> None:
-    output_filename.parent.mkdir(exist_ok=True)
-    with open(str(output_filename), "w") as outfile:
-        for row in mtx:
-            outfile.write(" ".join(str(item) for item in row) + "\n")

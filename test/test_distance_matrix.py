@@ -3,8 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from src import snp_to_lists, distance_matrix, matrix_to_file, manhattan_dist
-from test.testing_utils import get_out_path, prepare_test_data, get_data_path
+from src.tsv_reader import snp_to_lists
+from src.distance_matrix import distance_matrix, manhattan_dist
+from src.file_writer import matrix_to_file
+from test.testing_utils import get_out_path, prepare_test_data, get_data_path, get_out_test_path
 
 
 def test_distance_mtx():
@@ -18,7 +20,7 @@ def test_distance_mtx():
         [3, 2, 3, 0, 4],
         [1, 2, 5, 4, 0],
     ]
-    matrix_to_file(dm, Path(get_out_path() / "test/snp_matrix.txt"))
+    matrix_to_file(dm, get_out_test_path() / "snp_matrix.txt")
 
 
 @pytest.mark.slow
