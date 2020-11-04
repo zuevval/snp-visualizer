@@ -36,9 +36,9 @@ def get_significant_snp(annotations_filename: str) -> Set[int]:
 
 @dataclass
 class SnpInfo:
-    snp_dic: Dict[int, List[int]]  # key: SNP ID, value: SNP info
+    snp_dic: Dict[int, List[str]]  # key: SNP ID, value: SNP info
     snp_ids: List[int]  # list of SNP IDs corresponding to each feature vector
-    snp_indices: Dict[int, List[int]]  # key: SNP ID, value: index in sample vector
+    snp_indices: Dict[int, int]  # key: SNP ID, value: index in sample vector
     samples_vectors: Dict[int, List[int]]  # key: sample ID, value: feature vector
 
 
