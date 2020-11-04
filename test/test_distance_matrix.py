@@ -8,7 +8,7 @@ from test.testing_utils import get_out_path, prepare_test_data, get_data_path
 
 
 def test_distance_mtx():
-    _, _, samples_vectors = prepare_test_data()
+    samples_vectors = prepare_test_data().samples_vectors
     print("loaded " + str(len(samples_vectors)) + " samples")
     dm = distance_matrix(samples_vectors, manhattan_dist)
     assert dm == [
@@ -25,9 +25,9 @@ def test_distance_mtx():
 def test_dm_measure_time():
     for max_samples in (10, 20, 30, 40, 50):
         start = time()
-        _, _, samples_vectors = snp_to_lists(str(get_data_path() / "real_data/snp_data.tsv"),
-                                             str(get_data_path() / "real_data/snp2sample.tsv"),
-                                             max_samples=max_samples)
+        samples_vectors = snp_to_lists(str(get_data_path() / "real_data/snp_data.tsv"),
+                                       str(get_data_path() / "real_data/snp2sample.tsv"),
+                                       max_samples=max_samples).samples_vectors
         load_time = time()
         print("loaded " + str(len(samples_vectors)) + " samples")
         dm = distance_matrix(samples_vectors, manhattan_dist)
