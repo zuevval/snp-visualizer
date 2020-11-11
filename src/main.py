@@ -1,4 +1,5 @@
 from src.distance_matrix import distance_matrix, manhattan_dist
+from src.tsne import t_sne
 from src.tsv_reader import snp_to_lists
 from src.file_writer import write_csv, safe_w_open
 from test.testing_utils import get_data_path, get_out_path
@@ -16,8 +17,9 @@ def data_to_gephi_format():
 
     # dump snp_info to json format # TODO move to file_writer
     out_path = get_out_path() / "real_data" / "main"
+    samples_vectors_filename = "samples_vectors.json"
     for obj, name in [
-        (snp_info.samples_vectors, "samples_vectors.json"),
+        (snp_info.samples_vectors, samples_vectors_filename),
         (snp_info.snp_ids, "snp_ids.json"),
         (snp_info.snp_indices, "snp_indices.json"),
         (snp_info.snp_dic, "snp_dic.json"),
@@ -29,6 +31,9 @@ def data_to_gephi_format():
     dm = distance_matrix(snp_info.samples_vectors, manhattan_dist)
     write_csv(dm, out_path / "snp_matrix_significant.csv", names=list(snp_info.samples_vectors.keys()))
     print(datetime.now())
+
+    if input("run T-SNE? y/n").strip().lower() == "y":
+        t_sne(out_path / samples_vectors_filename, "tsne_filtered_snps.png")
 
 
 if __name__ == "__main__":
