@@ -1,8 +1,8 @@
 from src.distance_matrix import distance_matrix, manhattan_dist
-from src.tsne import t_sne
+from src.tsne import t_sne, plot_tsne_2d
 from src.tsv_reader import snp_to_lists
 from src.file_writer import write_csv, safe_w_open
-from test.testing_utils import get_data_path, get_out_path
+from src.utils import get_data_path, get_out_path
 from datetime import datetime
 import json
 
@@ -33,7 +33,7 @@ def data_to_gephi_format():
     print(datetime.now())
 
     if input("run T-SNE? y/n").strip().lower() == "y":
-        t_sne(out_path / samples_vectors_filename, "tsne_filtered_snps.png")
+        plot_tsne_2d(t_sne(out_path / samples_vectors_filename, 2), "tsne_filtered_snps.png")
 
 
 if __name__ == "__main__":

@@ -26,7 +26,9 @@ def matrix_to_file(mtx: List[List[int]], output_filename: Path) -> None:
             outfile.write(" ".join(str(item) for item in row) + "\n")
 
 
-def write_csv(dm: List[List[int]], output_filename: Path, names: Union[List[int], None] = None) -> None:
+def write_csv(dm: List[List[Union[int, float]]], output_filename: Path, names: Union[List[int], None] = None,
+              elements_integers: bool = True) -> None:
+    element_suffix, line_ending = (".;", ".\n") if elements_integers else (";", "\n")
     if names is None:
         names = list([i + 1 for i in range(len(dm))])
     else:
@@ -35,7 +37,7 @@ def write_csv(dm: List[List[int]], output_filename: Path, names: Union[List[int]
     with safe_w_open(output_filename) as outfile:
         outfile.write(";" + ";".join([str(i) for i in names]) + "\n")
         for name, row in zip(names, dm):
-            outfile.write(str(name) + ";" + ".;".join([str(elem) for elem in row]) + ".\n")
+            outfile.write(str(name) + ";" + element_suffix.join([str(elem) for elem in row]) + line_ending)
 
 
 if __name__ == "__main__":

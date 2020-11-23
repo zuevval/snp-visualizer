@@ -1,12 +1,12 @@
 from time import time
-from pathlib import Path
 
 import pytest
 
 from src.tsv_reader import snp_to_lists
 from src.distance_matrix import distance_matrix, manhattan_dist
 from src.file_writer import matrix_to_file
-from test.testing_utils import get_out_path, prepare_test_data, get_data_path, get_out_test_path
+from src.utils import get_data_path, get_out_path
+from test.testing_utils import prepare_test_data, get_out_test_path
 
 
 def test_distance_mtx():
