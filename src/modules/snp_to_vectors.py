@@ -1,7 +1,12 @@
 import csv
+import json
+import logging
+from pathlib import Path
 from typing import List, Dict, Union, Set
 from itertools import islice
 from dataclasses import dataclass
+
+from src.utils import safe_w_open, PipelineStepInterface
 
 
 def read_tsv_data(filename: str, max_rows: Union[None, int] = None, skip_header=False) -> List[List[str]]:
@@ -60,7 +65,7 @@ def snp_to_lists(snp_data_filename: str, samples_filename: str, annotations_file
     samples_vectors: Dict[int, List[int]] = {}  # key: sample ID, value: feature vector
     for row in samples:
         if len(row) < 3:
-            print("warning: invalid row")  # TODO set up logger
+            logging.warning("invalid row")
             continue
         sample_id, variant_id, allele_count = [int(x) for x in row]
         if sample_id not in samples_vectors:
@@ -68,3 +73,42 @@ def snp_to_lists(snp_data_filename: str, samples_filename: str, annotations_file
         if variant_id in snp_indices:
             samples_vectors[sample_id][snp_indices[variant_id]] = allele_count
     return SnpInfo(snp_dic=snp_dic, snp_ids=snp_ids, snp_indices=snp_indices, samples_vectors=samples_vectors)
+
+
+@dataclass
+class SnpToVectorStep(PipelineStepInterface):
+    input_snp_data: Path
+    input_samples: Path
+    input_annotations: Union[Path, None]
+
+    out_samples_vectors: Path
+    out_snp_ids: Path
+    out_snp_indices: Path
+    out_snp_dic: Path
+
+    def output_exists(self):
+        for out_file in [self.out_samples_vectors, self.out_samples_vectors, self.out_snp_indices, self.out_snp_ids]:
+            if not out_file.exists():
+                return False
+        return True
+
+    def run(self) -> int:
+        try:
+            snp_info = snp_to_lists(snp_data_filename=str(self.input_snp_data),
+                                    samples_filename=str(self.input_samples),
+                                    annotations_filename=str(self.input_annotations))
+            logging.info("loaded " + str(len(snp_info.samples_vectors)) + " samples")
+
+            # dump `snp_info` to json format
+            for obj, name in [
+                (snp_info.samples_vectors, self.out_samples_vectors),
+                (snp_info.snp_ids, self.out_snp_ids),
+                (snp_info.snp_indices, self.out_snp_indices),
+                (snp_info.snp_dic, self.out_snp_dic),
+            ]:
+                with safe_w_open(name) as vec_file:
+                    vec_file.write(json.dumps(obj))
+        except Exception as e:
+            logging.exception(e)
+            return -1
+        return 0

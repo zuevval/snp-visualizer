@@ -1,1 +1,1 @@
-from . import distance_matrix, file_writer, tsv_reader, tsne
+from .modules import distance_matrix, snp_to_vectors, tsne

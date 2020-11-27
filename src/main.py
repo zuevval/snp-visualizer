@@ -1,40 +1,47 @@
-from src.distance_matrix import distance_matrix, manhattan_dist
-from src.tsne import t_sne, plot_tsne_2d
-from src.tsv_reader import snp_to_lists
-from src.file_writer import write_csv, safe_w_open
-from src.utils import get_data_path, get_out_path
-from datetime import datetime
-import json
+from src.modules.distance_matrix import manhattan_dist, DistanceMatrixStep
+from src.modules.dm_exponent import DmToExpStep
+from src.modules.tsne import TSneStep
+from src.modules.snp_to_vectors import SnpToVectorStep
+from src.utils import get_data_path, get_out_path, Pipeline
 
 
-def data_to_gephi_format():
-    print(datetime.now())
-    real_data_path = get_data_path() / "real_data"
-    snp_info = snp_to_lists(snp_data_filename=str(real_data_path / "snp_data.tsv"),
-                            samples_filename=str(real_data_path / "snp2sample.tsv"),
-                            annotations_filename=str(real_data_path / "snp_annotation_significant.tsv"))
-    print("loaded " + str(len(snp_info.samples_vectors)) + " samples")
+def main():
+    out_dir = get_out_path() / "real_pipeline"
+    p = Pipeline(out_dir / "pipeline.log")
 
-    # dump snp_info to json format # TODO move to file_writer
-    out_path = get_out_path() / "real_data" / "main"
-    samples_vectors_filename = "samples_vectors.json"
-    for obj, name in [
-        (snp_info.samples_vectors, samples_vectors_filename),
-        (snp_info.snp_ids, "snp_ids.json"),
-        (snp_info.snp_indices, "snp_indices.json"),
-        (snp_info.snp_dic, "snp_dic.json"),
-    ]:
-        with safe_w_open(out_path / name) as vec_file:
-            vec_file.write(json.dumps(obj))
+    tsv_dir = get_data_path() / "real_data"
+    json_dir = out_dir / "json"
+    t_sne_dir = out_dir / "t_sne"
+    snp_vec_json = json_dir / "samples_vectors.json"
+    distance_matrix_csv = out_dir / "dm.csv"
 
-    print(datetime.now())
-    dm = distance_matrix(snp_info.samples_vectors, manhattan_dist)
-    write_csv(dm, out_path / "snp_matrix_significant.csv", names=list(snp_info.samples_vectors.keys()))
-    print(datetime.now())
-
-    if input("run T-SNE? y/n").strip().lower() == "y":
-        plot_tsne_2d(t_sne(out_path / samples_vectors_filename, 2), "tsne_filtered_snps.png")
+    p.add(SnpToVectorStep(
+        input_snp_data=tsv_dir / "snp_data.tsv",
+        input_samples=tsv_dir / "snp2sample.tsv",
+        input_annotations=tsv_dir / "snp_annotation_significant.tsv",
+        out_samples_vectors=snp_vec_json,
+        out_snp_dic=json_dir / "snp_dic.json",
+        out_snp_ids=json_dir / "snp_ids.json",
+        out_snp_indices=json_dir / "snp_indices.json"
+    ))
+    for n_dim in (2, 3):
+        p.add(TSneStep(
+            input_samples_vectors_json=snp_vec_json,
+            output_txt=t_sne_dir / "{}dim.txt".format(n_dim),
+            output_png=t_sne_dir / "{}dim.png".format(n_dim),
+            n_dimensions=n_dim
+        ))
+    p.add(DistanceMatrixStep(
+        input_samples_vectors_json=snp_vec_json,
+        output_matrix_csv=distance_matrix_csv,
+        metric=manhattan_dist
+    ))
+    p.add(DmToExpStep(
+        input_csv=distance_matrix_csv,
+        output_csv=out_dir / "dm_exp.csv"
+    ))
+    p.run()
 
 
 if __name__ == "__main__":
-    data_to_gephi_format()
+    main()

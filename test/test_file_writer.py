@@ -1,4 +1,4 @@
-from src.file_writer import write_csv
+from src.modules.distance_matrix import write_csv
 from test.testing_utils import get_out_test_path
 
 
