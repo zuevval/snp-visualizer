@@ -1,4 +1,4 @@
-from src.tsv_reader import get_significant_snp
+from src.modules.snp_to_vectors import get_significant_snp
 from test.testing_utils import prepare_test_data, get_data_path
 
 

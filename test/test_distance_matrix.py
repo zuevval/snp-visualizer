@@ -1,10 +1,8 @@
 from time import time
-
 import pytest
 
-from src.tsv_reader import snp_to_lists
-from src.distance_matrix import distance_matrix, manhattan_dist
-from src.file_writer import matrix_to_file
+from src.modules.distance_matrix import distance_matrix, manhattan_dist, write_csv
+from src.modules.snp_to_vectors import snp_to_lists
 from src.utils import get_data_path, get_out_path
 from test.testing_utils import prepare_test_data, get_out_test_path
 
@@ -20,7 +18,7 @@ def test_distance_mtx():
         [3, 2, 3, 0, 4],
         [1, 2, 5, 4, 0],
     ]
-    matrix_to_file(dm, get_out_test_path() / "snp_matrix.txt")
+    write_csv(dm, get_out_test_path() / "snp_matrix.txt")
 
 
 @pytest.mark.slow
@@ -34,7 +32,7 @@ def test_dm_measure_time():
         print("loaded " + str(len(samples_vectors)) + " samples")
         dm = distance_matrix(samples_vectors, manhattan_dist)
         dm_time = time()
-        matrix_to_file(dm, get_out_path() / ("real_data/snp_matrix_" + str(max_samples) + ".txt"))
+        write_csv(dm, get_out_path() / ("real_data/snp_matrix_" + str(max_samples) + ".txt"))
         elapsed = time()
         print(str(max_samples) + ": " + str(elapsed - start) + " seconds - overall")
         print(str(load_time - start) + ": loading, " + str(dm_time - load_time) + ": dist mtx calc")

@@ -1,4 +1,5 @@
-numpy==1.19.3
+numpy==1.19.3 # 1.19.4 causes bug in Windows
 scikit-learn>=0.23.2
 matplotlib>=3.3.2
-# TODO add to workflow & add tests for TSNE
+scikit-bio>=0.5.6 # install numpy first: https://github.com/biocore/scikit-bio/issues/1671
+biopython

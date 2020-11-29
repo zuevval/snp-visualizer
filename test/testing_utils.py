@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.tsv_reader import snp_to_lists, SnpInfo
+from src.modules.snp_to_vectors import snp_to_lists, SnpInfo
 from src.utils import get_out_path, get_data_path
 
 
