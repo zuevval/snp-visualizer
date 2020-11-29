@@ -3,6 +3,8 @@ import pytest
 from src import main
 from src.modules.distance_matrix import DistanceMatrixStep, manhattan_dist
 from src.modules.dm_exponent import DmToExpStep
+from src.modules.heatmap import HeatMapStep
+from src.modules.nj_tree import NjStep
 from src.modules.snp_to_vectors import SnpToVectorStep
 from src.modules.tsne import TSneStep
 from src.utils import get_data_path, get_out_path, Pipeline
@@ -39,6 +41,15 @@ def test_pipeline():
     p.add(DmToExpStep(
         input_csv=distance_matrix_csv,
         output_csv=out_dir / "dm_exp.csv"
+    ))
+    p.add(HeatMapStep(
+        input_dm_csv=distance_matrix_csv,
+        output_png=out_dir / "heatmap.png"
+    ))
+    p.add(NjStep(
+        input_dm_csv=distance_matrix_csv,
+        output_dnd=out_dir / "nj.dnd",
+        output_png=out_dir / "nj.png"
     ))
     p.run()
 

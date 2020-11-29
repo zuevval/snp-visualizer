@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Dict, Any, Callable, Union, Sequence
+from typing import List, Dict, Any, Callable, Union, Sequence, Optional
 
 from src.modules.tsne import read_samples_vectors
 from src.utils import PipelineStepInterface, safe_w_open
@@ -27,7 +27,7 @@ def distance_matrix(samples: Dict[Any, List[int]], metric: Callable[[List[int], 
     return result
 
 
-def write_csv(dm: Sequence[Sequence[Union[int, float]]], output_filename: Path, names: Union[List[int], None] = None,
+def write_csv(dm: Sequence[Sequence[Union[int, float]]], output_filename: Path, names: Optional[Sequence[int]] = None,
               elements_integers: bool = True) -> None:
     element_suffix, line_ending = (".;", ".\n") if elements_integers else (";", "\n")
     if names is None:
