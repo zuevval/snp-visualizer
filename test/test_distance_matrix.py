@@ -1,10 +1,17 @@
 from time import time
 import pytest
 
-from src.modules.distance_matrix import distance_matrix, manhattan_dist, write_csv
+from src.modules.distance_matrix import distance_matrix, manhattan_dist, manhattan_with_impact_decorator, write_csv
 from src.modules.snp_to_vectors import snp_to_lists
 from src.utils import get_data_path, get_out_path
 from test.testing_utils import prepare_test_data, get_out_test_path
+
+
+def test_manhattan_with_impact():
+    metric = manhattan_with_impact_decorator(get_data_path() / "test/impacts.json")
+    abs_tolerance = 1e-5
+    assert abs(metric([0, 0, 0], [1, 1, 1]) - 6) < abs_tolerance
+    assert abs(metric([0, -1, 0], [1, 1, 1]) - 8) < abs_tolerance
 
 
 def test_distance_mtx():

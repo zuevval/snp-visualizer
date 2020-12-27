@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt  # type: ignore
 import numpy as np  # type: ignore
 from sklearn.manifold import TSNE  # type: ignore
 
-from src.utils import get_out_path, PipelineStepInterface
+from src.utils import PipelineStepInterface
 
 
 def read_samples_vectors(path: Path) -> Dict[int, List[int]]:

@@ -3,7 +3,7 @@ import logging
 from dataclasses import dataclass
 from math import exp
 from pathlib import Path
-from typing import Sequence, Union, Tuple
+from typing import Sequence, Tuple
 
 import src.modules.distance_matrix
 from src.utils import get_out_path, PipelineStepInterface
@@ -20,7 +20,7 @@ def read_dm(input_csv: Path) -> Tuple[Sequence[Sequence[str]], Sequence[int]]:
 def dm_to_exponent(input_csv: Path, output_csv: Path):
     dm, names = read_dm(input_csv)
     exp_dm = [[exp(float(elem)) for elem in row] for row in dm]
-    src.modules.distance_matrix.write_csv(exp_dm, output_csv, names=names, elements_integers=False)
+    src.modules.distance_matrix.write_csv(exp_dm, output_csv, names=names)
 
 
 @dataclass

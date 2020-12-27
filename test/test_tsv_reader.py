@@ -21,7 +21,7 @@ def test_snp_to_lists():
 
 
 def test_get_significant_snp():
-    assert get_significant_snp(str(get_data_path() / "test/snp_annotation.tsv")) == {103}
+    assert get_significant_snp(str(get_data_path() / "test/snp_annotation.tsv")) == {103: 1.0}
 
 
 def test_snp_to_lists_significant_only():

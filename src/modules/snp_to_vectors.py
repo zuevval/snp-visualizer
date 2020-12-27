@@ -2,7 +2,7 @@ import csv
 import json
 import logging
 from pathlib import Path
-from typing import List, Dict, Union, Set
+from typing import List, Dict, Union, Optional
 from itertools import islice
 from dataclasses import dataclass
 
@@ -26,22 +26,27 @@ def is_valid_snp_row(row: List[str]) -> bool:
     return row_len == len(row) and not (len(row[ref_idx]) > 1 or len(row[alt_idx]) > 1)
 
 
-def is_valid_annotation_row(row: List[str], impacts: List[str]) -> bool:
+def is_valid_annotation_row(row: List[str], impacts: Dict[str, float]) -> bool:
     # expecting data in the format: [snp_id	Consequence	IMPACT]
     impact_idx, row_len = 2, 3
-    return (len(row) == row_len) and (row[impact_idx] in impacts)
+    return (len(row) == row_len) and (row[impact_idx] in impacts.keys())
 
 
-def get_significant_snp(annotations_filename: str) -> Set[int]:
-    modifier = "MODIFIER"
-    impacts = ["HIGH", "MODERATE", "LOW", modifier]
+def get_significant_snp(annotations_filename: str) -> Dict[int, float]:
+    """
+    Filter SNPs: leave annotated only
+    :param annotations_filename: path to annotations in .tsv
+    :return: dictionary { snp_id : impact } (`impact` is a float corresponding to appropriate impact type)
+    """
+    impacts = {"HIGH": 1., "MODERATE": .3, "LOW": .1, "MODIFIER": .001}  # TODO move to parameters of SnpToVectorStep
     snp_annotations = read_tsv_data(annotations_filename)
-    return {int(row[0]) for row in snp_annotations if is_valid_annotation_row(row, impacts) and row[2] != modifier}
+    return {int(row[0]): impacts[row[2]] for row in snp_annotations if is_valid_annotation_row(row, impacts)}
 
 
 @dataclass
 class SnpInfo:
     snp_dic: Dict[int, List[str]]  # key: SNP ID, value: SNP info
+    snp_impacts: List[float]  # list of impacts (float) corresponding to each position in each feature vector
     snp_ids: List[int]  # list of SNP IDs corresponding to each feature vector
     snp_indices: Dict[int, int]  # key: SNP ID, value: index in sample vector
     samples_vectors: Dict[int, List[int]]  # key: sample ID, value: feature vector
@@ -54,9 +59,10 @@ def snp_to_lists(snp_data_filename: str, samples_filename: str, annotations_file
     snp_dic = {int(row[0]): row[1:] for row in snp_data if is_valid_snp_row(row)}  # key: SNP ID, value: SNP info
 
     # filtering SNPs by impact (if annotations provided)
+    snp_impacts = None
     if annotations_filename:
-        significant_snp = get_significant_snp(annotations_filename)
-        snp_dic = {k: v for k, v in snp_dic.items() if k in significant_snp}
+        snp_impacts = get_significant_snp(annotations_filename)
+        snp_dic = {k: v for k, v in snp_dic.items() if k in snp_impacts.keys()}
 
     # reading samples info and converting to feature vectors [x1, x2, ...], xi in {0, 1, 2}, i in {1; len(snp_dic)}
     snp_ids = list(snp_dic.keys())  # list of SNP IDs corresponding to each feature vector
@@ -72,7 +78,14 @@ def snp_to_lists(snp_data_filename: str, samples_filename: str, annotations_file
             samples_vectors[sample_id] = [0] * len(snp_indices)
         if variant_id in snp_indices:
             samples_vectors[sample_id][snp_indices[variant_id]] = allele_count
-    return SnpInfo(snp_dic=snp_dic, snp_ids=snp_ids, snp_indices=snp_indices, samples_vectors=samples_vectors)
+
+    # converting impacts to vector
+    impacts_list = []
+    if snp_impacts:
+        impacts_list = [snp_impacts[snp_id] for snp_id in snp_ids]
+
+    return SnpInfo(snp_dic=snp_dic, snp_ids=snp_ids, snp_indices=snp_indices, samples_vectors=samples_vectors,
+                   snp_impacts=impacts_list)
 
 
 @dataclass
@@ -85,9 +98,11 @@ class SnpToVectorStep(PipelineStepInterface):
     out_snp_ids: Path
     out_snp_indices: Path
     out_snp_dic: Path
+    out_snp_impacts: Optional[Path] = None
 
     def output_exists(self):
-        for out_file in [self.out_samples_vectors, self.out_samples_vectors, self.out_snp_indices, self.out_snp_ids]:
+        for out_file in [self.out_samples_vectors, self.out_samples_vectors, self.out_snp_indices, self.out_snp_ids,
+                         self.out_snp_impacts]:
             if not out_file.exists():
                 return False
         return True
@@ -100,12 +115,15 @@ class SnpToVectorStep(PipelineStepInterface):
             logging.info("loaded " + str(len(snp_info.samples_vectors)) + " samples")
 
             # dump `snp_info` to json format
-            for obj, name in [
+            dump_mapping = [
                 (snp_info.samples_vectors, self.out_samples_vectors),
                 (snp_info.snp_ids, self.out_snp_ids),
                 (snp_info.snp_indices, self.out_snp_indices),
                 (snp_info.snp_dic, self.out_snp_dic),
-            ]:
+            ]
+            if self.out_snp_impacts:
+                dump_mapping.append((snp_info.snp_impacts, self.out_snp_impacts))
+            for obj, name in dump_mapping:
                 with safe_w_open(name) as vec_file:
                     vec_file.write(json.dumps(obj))
         except Exception as e:
