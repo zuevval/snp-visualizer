@@ -1,7 +1,7 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \newpage
-\section{Дополнительные материалы}
+\section{Дополнения}\label{appendix}
 
 \begin{figure}[H]
 	\centering
@@ -38,9 +38,112 @@
 \end{figure}
 
 \begin{figure}[H]
-	\centering \includegraphics[width=\myPictWidth]{significant/manhattan/graph}
-	\caption{Граф, построенный по матрице смежности (расстояние Хэмминга)}
-	\label{fig:signif_manhattan_graph}
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/manhattan/heatmap}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние Хэмминга (Манхэттенская метрика)}
+        \label{fig:heatmap_manh}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/impact/heatmap}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом значимости}
+        \label{fig:heatmap_impact}
+    \end{subfigure}
+
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/allele/heatmap}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом аллельности}
+        \label{fig:heatmap_allele}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/impact_allele/heatmap}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом значимости и аллельности}
+        \label{fig:heatmap_impact_allele}
+    \end{subfigure}
+    \caption{Тепловые карты, построенные по матрицам расстояний (учтены только полиморфизмы с аннотациями)}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/manhattan/nj}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние Хэмминга (Манхэттенская метрика)}
+        \label{fig:nj_manh}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/impact/nj}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом значимости}
+        \label{fig:nj_impact}
+    \end{subfigure}
+
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/allele/nj}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом аллельности}
+        \label{fig:nj_allele}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/impact_allele/nj}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом значимости и аллельности}
+        \label{fig:nj_impact_allele}
+    \end{subfigure}
+    \caption{Деревья, построенные метдом объединения соседей по матрицам расстояний (учтены только полиморфизмы с аннотациями)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/manhattan/dm_histogram}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние Хэмминга (Ман\-хэт\-тенская метрика)}
+        \label{fig:hist_manh}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/impact/dm_histogram}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом значимости}
+        \label{fig:hist_impact}
+    \end{subfigure}
+
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/allele/dm_histogram}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом аллельности}
+        \label{fig:hist_allele}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{significant/impact_allele/dm_histogram}
+        \captionsetup{width=.8\linewidth}
+        \caption{расстояние с учётом значимости и аллельности}
+        \label{fig:hist_impact_allele}
+    \end{subfigure}
+    \caption{Распределение значений элементов в матрицах расстояний (учтены только полиморфизмы с аннотациями)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering \includegraphics[width=\myPictWidth]{significant/manhattan/graph}
+    \caption{Граф, построенный по матрице смежности (расстояние Хэмминга)}
+    \label{fig:signif_manhattan_graph}
+\end{figure}
+
 
 \end{document}
