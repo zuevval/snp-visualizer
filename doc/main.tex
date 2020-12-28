@@ -1,0 +1,70 @@
+% !TeX spellcheck = en_US
+% compile with XeLaTeX or LuaLaTeX
+
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc} % russian, do not change
+\usepackage[T2A, T1]{fontenc} % russian, do not change
+\usepackage[english, russian]{babel} % russian, do not change
+
+% fonts
+\usepackage{fontspec} % different fonts
+\setmainfont{Times New Roman}
+\usepackage{amsmath}
+\usepackage{amssymb} %common math symbols
+\usepackage{dsfont}
+
+% utilities
+\usepackage{systeme} % systems of equations
+\usepackage{mathtools} % xRightarrow, xrightleftharpoons, etc
+\usepackage{array} % utils for tables
+\usepackage{makecell} % multirow for tables
+\usepackage{subfiles}
+\usepackage{hyperref}
+\hypersetup{pdfstartview=FitH,  linkcolor=blue, urlcolor=blue, colorlinks=true}
+\usepackage{framed} % advanced frames, boxes
+\usepackage{graphicx}
+\usepackage{caption} % caption setup
+\usepackage{subcaption} % captions for subfigures
+\usepackage{color}
+
+
+% styling
+\usepackage{setspace} % set space between lines
+\usepackage{float} % force pictures position
+\floatstyle{plaintop} % force caption on top
+\usepackage{enumitem} % itemize and enumerate with [noitemsep]
+\setlength{\parindent}{0pt} % no indents!
+
+% misc
+\graphicspath{{./img/}}
+\newcommand{\myPictWidth}{\textwidth}
+\newcommand{\phm}{\phantom{-}}
+
+% -- tables --
+% \restylefloat{table} % fix table positons with [H] option
+% \usepackage{array}
+% \usepackage{booktabs}
+% \usepackage{multirow}
+% \setlength{\heavyrulewidth}{1.5pt}
+% \setlength{\abovetopsep}{4pt}
+
+% \DeclareGraphicsExtensions{.pdf,.png,.jpg}
+% \usepackage[linesnumbered, ruled]{algorithm2e}%pseudocode
+% \usepackage{pdfpages}
+
+\begin{document}
+	\subfile{titlepage}
+	\tableofcontents \newpage
+
+	\subfile{body}
+
+	\begin{thebibliography}{99}
+		\bibitem{butler} Butler, John M. Forensic DNA typing: methodology.: John M. Butler. -- Waltham, MA, USA: Academic Press, 2012.
+        \bibitem{durbin} Durbin, R. et al. Biological sequence analysis.: R. Durbin. -- Cambridge, UK: Cambridge University Press, 1988.
+        \bibitem{ensembl} Sarah E. Hunt et al. Ensembl variation resources. Database, Volume 2018, 2018. URL: \href{https://academic.oup.com/database/article/doi/10.1093/database/bay119/5255129}{academic.oup.com/database/article/doi/10.1093/database/bay119/5255129}
+		\bibitem{tsne} L.J.P. van der Maaten and G.E. Hinton. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research 9(Nov):2579-2605, 2008. URL: \href{https://lvdmaaten.github.io/tsne/}{lvdmaaten.github.io/tsne}
+	\end{thebibliography}
+
+	\newpage
+	\subfile{appendix}
+\end{document}
